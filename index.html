@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Simulateur technique DeNormandie pour l'investissement locatif">
     <title>Simulateur DeNormandie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,86 +13,132 @@
             --color-blue-deep: #222D52;
             --color-beige-gold: #d2b68a;
             --color-white: #ffffff;
+            --color-gray-50: #f8f9fa;
+            --color-gray-100: #f1f3f5;
             --color-gray-200: #e9ecef;
             --color-gray-300: #dee2e6;
+            --color-gray-400: #ced4da;
             --color-text-primary: #222D52;
             --color-text-secondary: #495057;
             --color-text-muted: #868e96;
             --color-success: #10b981;
+            --color-error: #ef4444;
             
             --space-xs: 2px;
             --space-sm: 4px;
             --space-md: 6px;
             --space-lg: 10px;
             --space-xl: 14px;
+            --space-2xl: 20px;
+            --space-3xl: 28px;
             
-            --shadow-sm: 0 1px 2px rgba(34, 45, 82, 0.05);
-            --shadow-md: 0 2px 4px rgba(34, 45, 82, 0.1);
-            --radius-sm: 3px;
-            --radius-md: 5px;
+            --shadow-xs: 0 1px 2px 0 rgba(34, 45, 82, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(34, 45, 82, 0.1), 0 1px 2px 0 rgba(34, 45, 82, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(34, 45, 82, 0.1), 0 2px 4px -1px rgba(34, 45, 82, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(34, 45, 82, 0.1), 0 4px 6px -2px rgba(34, 45, 82, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(34, 45, 82, 0.1), 0 10px 10px -5px rgba(34, 45, 82, 0.04);
+            
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            --transition-base: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        * {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
         
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
         body {
-            font-family: 'Lato', sans-serif;
-            background: #fafbfc;
+            font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #fafbfc 0%, #f1f3f5 100%);
+            background-attachment: fixed;
             color: var(--color-text-primary);
-            line-height: 1.4;
-            padding: var(--space-lg);
-            font-size: 11px;
+            line-height: 1.5;
+            padding: var(--space-lg) var(--space-md);
+            font-size: 13px;
+            min-height: 100vh;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-md) var(--space-sm);
+                font-size: 12px;
+            }
         }
         
         .container {
-            max-width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
         }
         
         .page-header {
             text-align: center;
             margin-bottom: var(--space-xl);
-            padding: var(--space-md) 0;
+            padding: var(--space-lg) 0;
         }
         
         .page-header h1 {
             font-family: 'Cinzel', serif;
-            font-size: 1.4rem;
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
             font-weight: 600;
             color: var(--color-blue-deep);
             margin-bottom: var(--space-xs);
+            letter-spacing: -0.02em;
         }
         
         .page-header .subtitle {
-            font-size: 0.75rem;
+            font-size: clamp(0.8125rem, 1.8vw, 0.9375rem);
             color: var(--color-text-secondary);
+            font-weight: 300;
         }
         
         .top-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--space-xl);
-            margin-bottom: var(--space-xl);
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
             align-items: stretch;
         }
         
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
             .top-grid {
                 grid-template-columns: 1fr;
+                gap: var(--space-md);
             }
         }
         
         .results-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: var(--space-xl);
             display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--space-md);
+            animation: fadeInUp 0.4s ease-out;
         }
         
         .results-grid.show {
             display: grid;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @media (max-width: 1600px) {
@@ -106,9 +153,10 @@
             }
         }
         
-        @media (max-width: 900px) {
+        @media (max-width: 768px) {
             .results-grid {
                 grid-template-columns: 1fr;
+                gap: var(--space-md);
             }
         }
         
@@ -116,10 +164,29 @@
             background: var(--color-white);
             border-radius: var(--radius-md);
             padding: var(--space-lg);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--color-gray-200);
             display: flex;
             flex-direction: column;
+            transition: box-shadow var(--transition-smooth), transform var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-beige-gold) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
         }
         
         .card.hidden {
@@ -128,20 +195,22 @@
         
         .card h2 {
             font-family: 'Cinzel', serif;
-            font-size: 1rem;
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
             font-weight: 600;
             color: var(--color-blue-deep);
             margin-bottom: var(--space-md);
             padding-bottom: var(--space-sm);
             border-bottom: 2px solid var(--color-beige-gold);
+            letter-spacing: -0.01em;
         }
         
         .card h3 {
             font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: clamp(0.875rem, 1.3vw, 1rem);
             font-weight: 600;
             color: var(--color-blue-deep);
             margin: var(--space-md) 0 var(--space-sm);
+            letter-spacing: -0.01em;
         }
         
         .card h3:first-of-type {
@@ -149,19 +218,38 @@
         }
         
         .section-intro {
-            background: #f8f9fa;
+            background: var(--color-gray-50);
             padding: var(--space-sm);
             border-radius: var(--radius-sm);
             margin-bottom: var(--space-md);
-            font-size: 0.7rem;
+            font-size: 0.8125rem;
             color: var(--color-text-secondary);
             border: 1px solid var(--color-gray-200);
+            line-height: 1.5;
         }
         
         .form-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: var(--space-md);
+        }
+        
+        @media (max-width: 1200px) {
+            .form-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         .form-group {
@@ -174,27 +262,57 @@
         
         label {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--color-text-primary);
             margin-bottom: var(--space-xs);
+            letter-spacing: 0.01em;
         }
         
-        input, select {
+        label[for] {
+            cursor: pointer;
+        }
+        
+        input[type="number"],
+        select {
             width: 100%;
             background: var(--color-white);
-            border: 1px solid var(--color-gray-300);
+            border: 1.5px solid var(--color-gray-300);
             border-radius: var(--radius-sm);
-            padding: 4px 8px;
-            font-size: 0.75rem;
+            padding: 6px 10px;
+            font-size: 0.8125rem;
             font-family: 'Lato', sans-serif;
             color: var(--color-text-primary);
+            transition: all var(--transition-base);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
         
-        input:focus, select:focus {
+        input[type="number"]:hover,
+        select:hover {
+            border-color: var(--color-gray-400);
+        }
+        
+        input[type="number"]:focus,
+        select:focus {
             outline: none;
             border-color: var(--color-beige-gold);
-            box-shadow: 0 0 0 2px rgba(210, 182, 138, 0.1);
+            box-shadow: 0 0 0 3px rgba(210, 182, 138, 0.1);
+            background-color: var(--color-white);
+        }
+        
+        input[type="number"]:invalid:not(:placeholder-shown),
+        select:invalid:not(:placeholder-shown) {
+            border-color: var(--color-error);
+        }
+        
+        input[type="number"]:disabled,
+        select:disabled {
+            background-color: var(--color-gray-50);
+            color: var(--color-text-muted);
+            cursor: not-allowed;
+            opacity: 0.6;
         }
         
         .input-suffix {
@@ -202,25 +320,40 @@
         }
         
         .input-suffix input {
-            padding-right: 35px;
+            padding-right: 38px;
         }
         
         .input-suffix::after {
             content: attr(data-suffix);
             position: absolute;
-            right: 8px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--color-text-muted);
             font-weight: 500;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             pointer-events: none;
+            user-select: none;
+        }
+        
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 32px;
         }
         
         .button-group {
             display: flex;
-            gap: var(--space-md);
+            gap: var(--space-sm);
             margin-top: var(--space-md);
+        }
+        
+        @media (max-width: 480px) {
+            .button-group {
+                flex-direction: column;
+            }
         }
         
         button {
@@ -230,13 +363,53 @@
             border: none;
             border-radius: var(--radius-md);
             padding: 8px 16px;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
             font-weight: 600;
+            font-family: 'Lato', sans-serif;
             cursor: pointer;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            min-height: 36px;
         }
         
-        button:hover {
-            opacity: 0.9;
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button:focus-visible {
+            outline: 2px solid var(--color-beige-gold);
+            outline-offset: 2px;
         }
         
         button.secondary {
@@ -244,13 +417,26 @@
             color: var(--color-text-primary);
         }
         
+        button.secondary:hover:not(:disabled) {
+            background: var(--color-gray-300);
+        }
+        
         .result-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 3px 0;
+            padding: var(--space-xs) 0;
             border-bottom: 1px solid var(--color-gray-200);
-            font-size: 0.75rem;
+            font-size: 0.8125rem;
+            transition: background-color var(--transition-base);
+            border-radius: var(--radius-sm);
+            margin: 0 calc(var(--space-xs) * -1);
+            padding-left: var(--space-xs);
+            padding-right: var(--space-xs);
+        }
+        
+        .result-row:hover {
+            background-color: var(--color-gray-50);
         }
         
         .result-row:last-child {
@@ -259,12 +445,14 @@
         
         .result-label {
             color: var(--color-text-secondary);
+            font-weight: 400;
         }
         
         .result-value {
             font-weight: 600;
             color: var(--color-text-primary);
             text-align: right;
+            font-variant-numeric: tabular-nums;
         }
         
         .result-value.positive {
@@ -274,15 +462,16 @@
         
         .result-value.highlight {
             color: var(--color-beige-gold);
-            font-size: 0.85rem;
+            font-size: 0.9375rem;
             font-weight: 700;
         }
         
         .result-value.big {
-            font-size: 1rem;
+            font-size: clamp(1.125rem, 2.2vw, 1.5rem);
             font-weight: 700;
             color: var(--color-beige-gold);
             font-family: 'Cinzel', serif;
+            letter-spacing: -0.02em;
         }
         
         .highlight-box {
@@ -291,11 +480,35 @@
             padding: var(--space-md);
             border-radius: var(--radius-md);
             margin: var(--space-md) 0;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(210, 182, 138, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
         }
         
         .highlight-box .result-row {
             border-color: rgba(255, 255, 255, 0.15);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .highlight-box .result-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
         }
         
         .highlight-box .result-label,
@@ -308,23 +521,23 @@
         }
         
         .synthese {
-            background: #f8f9fa;
-            border-radius: var(--radius-md);
+            background: var(--color-gray-50);
+            border-radius: 0;
             padding: var(--space-md);
-            border-left: 2px solid var(--color-beige-gold);
+            border-left: 3px solid var(--color-beige-gold);
             flex: 1;
         }
         
         .synthese h3 {
             margin-top: 0;
             color: var(--color-blue-deep);
-            font-size: 0.85rem;
+            font-size: 0.9375rem;
             margin-bottom: var(--space-sm);
         }
         
         .synthese h4 {
             font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
             font-weight: 600;
             color: var(--color-blue-deep);
             margin: var(--space-md) 0 var(--space-xs);
@@ -341,17 +554,20 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
         }
         
         .empty-state p {
-            font-size: 0.8rem;
+            font-size: 0.9375rem;
             margin-bottom: var(--space-xs);
             color: var(--color-text-primary);
+            font-weight: 400;
         }
         
         .empty-state p:last-child {
             color: var(--color-text-muted);
-            font-size: 0.75rem;
+            font-size: 0.8125rem;
+            font-weight: 300;
         }
         
         .results-section {
@@ -361,164 +577,293 @@
         .results-section h3 {
             margin-bottom: var(--space-sm);
         }
+        
+        /* Amélioration de l'accessibilité */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus visible pour l'accessibilité */
+        *:focus-visible {
+            outline: 2px solid var(--color-beige-gold);
+            outline-offset: 2px;
+        }
+        
+        /* Amélioration de la lisibilité */
+        @media (prefers-contrast: high) {
+            .card {
+                border: 2px solid var(--color-text-primary);
+            }
+            
+            button {
+                border: 2px solid var(--color-blue-deep);
+            }
+        }
+        
+        /* Loading state */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        /* Error state */
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+            padding: var(--space-sm);
+            border-radius: var(--radius-sm);
+            margin-top: var(--space-sm);
+            margin-bottom: var(--space-sm);
+            font-size: 0.8125rem;
+            border-left: 3px solid var(--color-error);
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="page-header">
+        <header class="page-header" role="banner">
             <h1>🏠 Simulateur DeNormandie</h1>
             <p class="subtitle">Simulateur technique</p>
-        </div>
+        </header>
         
-        <form id="simulatorForm">
-            <div class="top-grid">
-                <!-- Colonne 1 : Paramètres -->
-                <div class="card" id="paramsCard">
-                    <h2>📝 Paramètres</h2>
+        <main role="main">
+            <form id="simulatorForm" novalidate aria-label="Formulaire de simulation">
+                <div class="top-grid">
+                    <!-- Colonne 1 : Paramètres -->
+                    <section class="card" id="paramsCard" aria-labelledby="params-title">
+                        <h2 id="params-title">📝 Paramètres</h2>
+                        
+                        <div class="section-intro" role="note">
+                            Renseignez les informations du projet immobilier.
+                        </div>
+                        
+                        <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <h3>🏡 Bien immobilier</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="prix_bien">Prix d'achat</label>
+                                <div class="input-suffix" data-suffix="€">
+                                    <input type="number" 
+                                           id="prix_bien" 
+                                           name="prix_bien" 
+                                           step="1" 
+                                           min="0" 
+                                           placeholder="150000" 
+                                           required
+                                           aria-required="true"
+                                           aria-describedby="prix_bien-desc">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="surface">Surface habitable</label>
+                                <div class="input-suffix" data-suffix="m²">
+                                    <input type="number" 
+                                           id="surface" 
+                                           name="surface" 
+                                           step="0.01" 
+                                           min="0" 
+                                           placeholder="65" 
+                                           required
+                                           aria-required="true">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="plafond_loyer">Plafond de loyer</label>
+                                <div class="input-suffix" data-suffix="€/m²">
+                                    <input type="number" 
+                                           id="plafond_loyer" 
+                                           name="plafond_loyer" 
+                                           step="0.01" 
+                                           min="0" 
+                                           placeholder="10.15" 
+                                           required
+                                           aria-required="true">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h3>💳 Frais annexes</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="frais_garantie">Frais de garantie</label>
+                                <div class="input-suffix" data-suffix="€">
+                                    <input type="number" 
+                                           id="frais_garantie" 
+                                           name="frais_garantie" 
+                                           step="1" 
+                                           min="0" 
+                                           placeholder="3000"
+                                           aria-label="Frais de garantie bancaire">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="frais_dossier">Frais de dossier</label>
+                                <div class="input-suffix" data-suffix="€">
+                                    <input type="number" 
+                                           id="frais_dossier" 
+                                           name="frais_dossier" 
+                                           step="1" 
+                                           min="0" 
+                                           placeholder="500"
+                                           aria-label="Frais de dossier bancaire">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h3>🏦 Prêt immobilier</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="duree">Durée du prêt</label>
+                                <div class="input-suffix" data-suffix="ans">
+                                    <input type="number" 
+                                           id="duree" 
+                                           name="duree" 
+                                           min="5" 
+                                           max="30" 
+                                           placeholder="25" 
+                                           value="25" 
+                                           required
+                                           aria-required="true"
+                                           aria-label="Durée du prêt en années">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="taux_emprunt">Taux d'intérêt</label>
+                                <div class="input-suffix" data-suffix="%">
+                                    <input type="number" 
+                                           id="taux_emprunt" 
+                                           name="taux_emprunt" 
+                                           step="0.01" 
+                                           min="0"
+                                           max="100"
+                                           placeholder="3.2" 
+                                           value="3.2" 
+                                           required
+                                           aria-required="true"
+                                           aria-label="Taux d'intérêt du prêt en pourcentage">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="taux_assurance">Taux d'assurance</label>
+                                <div class="input-suffix" data-suffix="%">
+                                    <input type="number" 
+                                           id="taux_assurance" 
+                                           name="taux_assurance" 
+                                           step="0.01" 
+                                           min="0"
+                                           max="10"
+                                           placeholder="0.3" 
+                                           value="0.3" 
+                                           required
+                                           aria-required="true"
+                                           aria-label="Taux d'assurance emprunteur en pourcentage">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h3>📊 Situation fiscale</h3>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="tmi">Tranche marginale d'imposition (TMI)</label>
+                                <select id="tmi" 
+                                        name="tmi" 
+                                        required
+                                        aria-required="true"
+                                        aria-label="Sélectionnez votre tranche marginale d'imposition">
+                                    <option value="" disabled selected>-- Sélectionnez --</option>
+                                    <option value="11">11%</option>
+                                    <option value="30">30%</option>
+                                    <option value="41">41%</option>
+                                    <option value="45">45%</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="submit" aria-label="Calculer la simulation">
+                                🔄 Calculer
+                            </button>
+                            <button type="button" 
+                                    class="secondary" 
+                                    id="resetBtn" 
+                                    style="display: none;"
+                                    aria-label="Réinitialiser le formulaire">
+                                ↺ Réinitialiser
+                            </button>
+                        </div>
+                    </section>
                     
-                    <div class="section-intro">
-                        Renseignez les informations du projet immobilier.
-                    </div>
+                    <!-- Colonne 2 : Bilan -->
+                    <section class="card hidden" id="bilanCard" aria-labelledby="bilan-title">
+                        <h2 id="bilan-title">📈 Bilan</h2>
+                        <div id="bilanContent" role="region" aria-live="polite"></div>
+                    </section>
+                </div>
+                
+                <!-- Grille résultats : pleine largeur -->
+                <div class="results-grid" id="resultsGrid" role="region" aria-label="Résultats de la simulation" aria-live="polite">
+                    <!-- Colonne 1 : Économie & TRI -->
+                    <section class="card" id="economieCard" aria-labelledby="economie-title">
+                        <h2 id="economie-title">💰 Économie & TRI</h2>
+                        <div class="highlight-box" id="economieContent"></div>
+                    </section>
                     
-                    <div class="form-grid">
-                        <div class="form-group full-width">
-                            <h3>🏡 Bien immobilier</h3>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="prix_bien">Prix</label>
-                            <div class="input-suffix" data-suffix="€">
-                                <input type="number" id="prix_bien" name="prix_bien" step="1" 
-                                       min="0" placeholder="150000" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="surface">Surface</label>
-                            <div class="input-suffix" data-suffix="m²">
-                                <input type="number" id="surface" name="surface" step="0.01" 
-                                       min="0" placeholder="65" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="plafond_loyer">Plafond</label>
-                            <div class="input-suffix" data-suffix="€/m²">
-                                <input type="number" id="plafond_loyer" name="plafond_loyer" step="0.01" 
-                                       min="0" placeholder="10.15" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <h3>💳 Frais</h3>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="frais_garantie">Garantie</label>
-                            <div class="input-suffix" data-suffix="€">
-                                <input type="number" id="frais_garantie" name="frais_garantie" step="1" 
-                                       min="0" placeholder="3000">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="frais_dossier">Dossier</label>
-                            <div class="input-suffix" data-suffix="€">
-                                <input type="number" id="frais_dossier" name="frais_dossier" step="1" 
-                                       min="0" placeholder="500">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <h3>🏦 Prêt</h3>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="duree">Durée</label>
-                            <div class="input-suffix" data-suffix="ans">
-                                <input type="number" id="duree" name="duree" min="5" max="30" 
-                                       placeholder="25" value="25" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="taux_emprunt">Taux</label>
-                            <div class="input-suffix" data-suffix="%">
-                                <input type="number" id="taux_emprunt" name="taux_emprunt" step="0.01" 
-                                       min="0" placeholder="3.2" value="3.2" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="taux_assurance">Assurance</label>
-                            <div class="input-suffix" data-suffix="%">
-                                <input type="number" id="taux_assurance" name="taux_assurance" step="0.01" 
-                                       min="0" placeholder="0.3" value="0.3" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <h3>📊 Fiscal</h3>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="tmi">TMI</label>
-                            <select id="tmi" name="tmi" required>
-                                <option value="" disabled selected>-- Sélectionnez --</option>
-                                <option value="11">11%</option>
-                                <option value="30">30%</option>
-                                <option value="41">41%</option>
-                                <option value="45">45%</option>
-                            </select>
-                        </div>
-                    </div>
+                    <!-- Colonne 2 : Coûts -->
+                    <section class="card" id="coutsCard" aria-labelledby="couts-title">
+                        <h2 id="couts-title">💵 Coûts</h2>
+                        <div class="results-section" id="coutsContent"></div>
+                    </section>
                     
-                    <div class="button-group">
-                        <button type="submit">🔄 Calculer</button>
-                        <button type="button" class="secondary" id="resetBtn" style="display: none;">↺ Réinitialiser</button>
-                    </div>
+                    <!-- Colonne 3 : Revenus -->
+                    <section class="card" id="revenusCard" aria-labelledby="revenus-title">
+                        <h2 id="revenus-title">🏠 Revenus</h2>
+                        <div class="results-section" id="revenusContent"></div>
+                    </section>
+                    
+                    <!-- Colonne 4 : Charges -->
+                    <section class="card" id="chargesCard" aria-labelledby="charges-title">
+                        <h2 id="charges-title">📋 Charges</h2>
+                        <div class="results-section" id="chargesContent"></div>
+                    </section>
+                    
+                    <!-- Colonne 5 : Réductions -->
+                    <section class="card" id="reductionsCard" aria-labelledby="reductions-title">
+                        <h2 id="reductions-title">🎯 Réductions</h2>
+                        <div class="results-section" id="reductionsContent"></div>
+                    </section>
                 </div>
-                
-                <!-- Colonne 2 : Bilan -->
-                <div class="card hidden" id="bilanCard">
-                    <h2>📈 Bilan</h2>
-                    <div id="bilanContent"></div>
-                </div>
-            </div>
-            
-            <!-- Grille résultats : pleine largeur -->
-            <div class="results-grid" id="resultsGrid">
-                <!-- Colonne 1 : Économie & TRI -->
-                <div class="card" id="economieCard">
-                    <h2>💰 Économie & TRI</h2>
-                    <div class="highlight-box" id="economieContent"></div>
-                </div>
-                
-                <!-- Colonne 2 : Coûts -->
-                <div class="card" id="coutsCard">
-                    <h2>💵 Coûts</h2>
-                    <div class="results-section" id="coutsContent"></div>
-                </div>
-                
-                <!-- Colonne 3 : Revenus -->
-                <div class="card" id="revenusCard">
-                    <h2>🏠 Revenus</h2>
-                    <div class="results-section" id="revenusContent"></div>
-                </div>
-                
-                <!-- Colonne 4 : Charges -->
-                <div class="card" id="chargesCard">
-                    <h2>📋 Charges</h2>
-                    <div class="results-section" id="chargesContent"></div>
-                </div>
-                
-                <!-- Colonne 5 : Réductions -->
-                <div class="card" id="reductionsCard">
-                    <h2>🎯 Réductions</h2>
-                    <div class="results-section" id="reductionsContent"></div>
-                </div>
-            </div>
-        </form>
+            </form>
+        </main>
     </div>
     
     <script>
@@ -544,13 +889,9 @@
             const coef_base = 0.7;
             const coef_numerateur = 19;
             
-            // Frais de notaire = Prix du bien * 6%
             const frais_notaire = data.prix_bien * 0.06;
-            
-            // Montant emprunté = Prix du bien
             const montant_emprunte = data.prix_bien;
             
-            // Mensualité du prêt (formule Excel exacte)
             const taux_mensuel = (data.taux_emprunt / 100) / 12;
             const nb_mensualites = data.duree * 12;
             let mensualite_pret;
@@ -562,27 +903,15 @@
             const assurance_mensuelle = montant_emprunte * (data.taux_assurance / 100) / 12;
             const mensualite_totale = Math.round((mensualite_pret + assurance_mensuelle) * 100) / 100;
             
-            // Coefficient multiplicateur = 0.7 + (19 / surface)
-            // Plafonné à 1.20
             let coef_multiplicateur = coef_base + (coef_numerateur / data.surface);
             coef_multiplicateur = Math.min(coef_multiplicateur, 1.20);
             
-            // Montant du loyer = surface * plafond_loyer * coefficient
             const loyer_mensuel = data.surface * data.plafond_loyer * coef_multiplicateur;
-            
-            // Frais de gestion = 10% du loyer
             const frais_gestion = loyer_mensuel * 0.1;
-            
-            // Taxe foncière = (loyer * 1.2) / 12
             const taxe_fonciere = (loyer_mensuel * 1.2) / 12;
-            
-            // Charges de copro = (surface * 1.5) / 3
             const charges_copro = (data.surface * 1.5) / 3;
-            
-            // Charges mensuelles = frais_gestion + taxe_fonciere + charges_copro
             const charges_mensuelles = frais_gestion + taxe_fonciere + charges_copro;
             
-            // % appliqué selon tranche TMI
             let pct_applique;
             switch(parseInt(data.tmi)) {
                 case 11: pct_applique = 0.718; break;
@@ -592,40 +921,17 @@
                 default: pct_applique = 0.528;
             }
             
-            // Charges réelles = charges_mensuelles * pct_applique
             const charges_reelles = charges_mensuelles * pct_applique;
-            
-            // Réduction d'impôt années 1-6 = ((prix_bien + frais_notaire) * 2%) / 12
             const reduction_1_6_mois = ((data.prix_bien + frais_notaire) * 0.02) / 12;
-            
-            // Réduction d'impôt années 6-9 = ((prix_bien + frais_notaire) * 2%) / 12
             const reduction_6_9_mois = ((data.prix_bien + frais_notaire) * 0.02) / 12;
-            
-            // Réduction d'impôt années 9-12 = ((prix_bien + frais_notaire) * 1%) / 12
             const reduction_9_12_mois = ((data.prix_bien + frais_notaire) * 0.01) / 12;
-            
-            // Revenus années 1-9 = loyer + réduction impôt
             const revenus_1_9 = loyer_mensuel + reduction_1_6_mois;
-            
-            // Charges années 1-9 = taux_assurance + charges_reelles
             const charges_1_9 = assurance_mensuelle + charges_reelles;
-            
-            // Effort net années 1-9
             const effort_1_9 = revenus_1_9 - charges_1_9;
-            
-            // Revenus années 9-12 = loyer + réduction impôt 9-12
             const revenus_9_12 = loyer_mensuel + reduction_9_12_mois;
-            
-            // Charges années 9-12
             const charges_9_12 = assurance_mensuelle + charges_reelles;
-            
-            // Effort net années 9-12
             const effort_9_12 = revenus_9_12 - charges_9_12;
-            
-            // Économie fiscale totale 12 ans = 21% * (prix_bien + frais_notaire)
             const economie_fiscale_12ans = 0.21 * (data.prix_bien + frais_notaire);
-            
-            // TRI = (revenus_1_9 * 12) / prix_bien
             const tri = (revenus_1_9 * 12) / data.prix_bien * 100;
             
             return {
@@ -673,19 +979,27 @@
             const bilanCard = document.getElementById('bilanCard');
             const resultsGrid = document.getElementById('resultsGrid');
             const resetBtn = document.getElementById('resetBtn');
+            const errorMessage = document.getElementById('errorMessage');
             
-            // Afficher les sections
+            // Masquer les erreurs
+            errorMessage.classList.remove('show');
+            errorMessage.textContent = '';
+            
+            // Afficher les sections avec animation
             bilanCard.classList.remove('hidden');
             resultsGrid.classList.add('show');
             resetBtn.style.display = 'block';
+            
+            // Scroll vers les résultats
+            setTimeout(() => {
+                resultsGrid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
             
             // Bilan
             const bilanContent = document.getElementById('bilanContent');
             const synthese = document.createElement('div');
             synthese.className = 'synthese';
-            synthese.innerHTML = `
-                <h3>Années 1-9</h3>
-            `;
+            synthese.innerHTML = `<h3>Années 1-9</h3>`;
             synthese.appendChild(createResultRow('Revenus', formatEuro(results.revenus_1_9), 'positive'));
             synthese.appendChild(createResultRow('Charges', formatEuro(results.charges_1_9), ''));
             synthese.appendChild(createResultRow('Net', formatEuro(results.effort_1_9), 'highlight'));
@@ -755,35 +1069,90 @@
             const resetBtn = document.getElementById('resetBtn');
             const bilanCard = document.getElementById('bilanCard');
             const resultsGrid = document.getElementById('resultsGrid');
+            const errorMessage = document.getElementById('errorMessage');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            // Validation en temps réel
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(input);
+                });
+                
+                input.addEventListener('input', function() {
+                    if (input.classList.contains('error')) {
+                        validateField(input);
+                    }
+                });
+            });
+            
+            function validateField(field) {
+                const isValid = field.checkValidity();
+                if (isValid) {
+                    field.classList.remove('error');
+                    field.setAttribute('aria-invalid', 'false');
+                } else {
+                    field.classList.add('error');
+                    field.setAttribute('aria-invalid', 'true');
+                }
+                return isValid;
+            }
             
             // Gestion de la soumission du formulaire
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
+                // Valider tous les champs
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (!validateField(input)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (!isValid) {
+                    errorMessage.textContent = 'Veuillez corriger les erreurs dans le formulaire';
+                    errorMessage.classList.add('show');
+                    errorMessage.focus();
+                    return;
+                }
+                
                 // Récupérer les valeurs
                 const data = {
-                    prix_bien: Math.max(0, parseFloat(document.getElementById('prix_bien').value) || 0),
-                    surface: Math.max(0, parseFloat(document.getElementById('surface').value) || 0),
-                    plafond_loyer: Math.max(0, parseFloat(document.getElementById('plafond_loyer').value) || 0),
-                    frais_garantie: Math.max(0, parseFloat(document.getElementById('frais_garantie').value) || 0),
-                    frais_dossier: Math.max(0, parseFloat(document.getElementById('frais_dossier').value) || 0),
-                    duree: Math.max(5, parseInt(document.getElementById('duree').value) || 25),
-                    taux_emprunt: Math.max(0, parseFloat(document.getElementById('taux_emprunt').value) || 3.2),
-                    taux_assurance: Math.max(0, parseFloat(document.getElementById('taux_assurance').value) || 0.3),
+                    prix_bien: parseFloat(document.getElementById('prix_bien').value) || 0,
+                    surface: parseFloat(document.getElementById('surface').value) || 0,
+                    plafond_loyer: parseFloat(document.getElementById('plafond_loyer').value) || 0,
+                    frais_garantie: parseFloat(document.getElementById('frais_garantie').value) || 0,
+                    frais_dossier: parseFloat(document.getElementById('frais_dossier').value) || 0,
+                    duree: parseInt(document.getElementById('duree').value) || 25,
+                    taux_emprunt: parseFloat(document.getElementById('taux_emprunt').value) || 3.2,
+                    taux_assurance: parseFloat(document.getElementById('taux_assurance').value) || 0.3,
                     tmi: document.getElementById('tmi').value
                 };
                 
                 // Vérifier que tous les champs requis sont remplis
                 if (!data.prix_bien || !data.surface || !data.plafond_loyer || !data.tmi) {
-                    alert('Veuillez remplir tous les champs obligatoires');
+                    errorMessage.textContent = 'Veuillez remplir tous les champs obligatoires';
+                    errorMessage.classList.add('show');
                     return;
                 }
                 
-                // Calculer
-                const results = calculateSimulation(data);
+                // Désactiver le bouton pendant le calcul
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ Calcul en cours...';
                 
-                // Afficher les résultats
-                displayResults(results);
+                // Simuler un petit délai pour l'UX
+                setTimeout(() => {
+                    // Calculer
+                    const results = calculateSimulation(data);
+                    
+                    // Afficher les résultats
+                    displayResults(results);
+                    
+                    // Réactiver le bouton
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '🔄 Calculer';
+                }, 300);
             });
             
             // Gestion du bouton réinitialiser
@@ -807,6 +1176,19 @@
                 document.getElementById('revenusContent').innerHTML = '';
                 document.getElementById('chargesContent').innerHTML = '';
                 document.getElementById('reductionsContent').innerHTML = '';
+                
+                // Masquer les erreurs
+                errorMessage.classList.remove('show');
+                errorMessage.textContent = '';
+                
+                // Retirer les classes d'erreur
+                inputs.forEach(input => {
+                    input.classList.remove('error');
+                    input.setAttribute('aria-invalid', 'false');
+                });
+                
+                // Focus sur le premier champ
+                document.getElementById('prix_bien').focus();
             });
         });
     </script>
