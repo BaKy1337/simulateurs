@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur DeNormandie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-blue-deep: #222D52;
+            --color-beige-gold: #d2b68a;
+            --color-white: #ffffff;
+            --color-gray-200: #e9ecef;
+            --color-gray-300: #dee2e6;
+            --color-text-primary: #222D52;
+            --color-text-secondary: #495057;
+            --color-text-muted: #868e96;
+            --color-success: #10b981;
+            
+            --space-xs: 2px;
+            --space-sm: 4px;
+            --space-md: 6px;
+            --space-lg: 10px;
+            --space-xl: 14px;
+            
+            --shadow-sm: 0 1px 2px rgba(34, 45, 82, 0.05);
+            --shadow-md: 0 2px 4px rgba(34, 45, 82, 0.1);
+            --radius-sm: 3px;
+            --radius-md: 5px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background: #fafbfc;
+            color: var(--color-text-primary);
+            line-height: 1.4;
+            padding: var(--space-lg);
+            font-size: 11px;
+        }
+        
+        .container {
+            max-width: 100%;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            padding: var(--space-md) 0;
+        }
+        
+        .page-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-blue-deep);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .page-header .subtitle {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            align-items: stretch;
+        }
+        
+        @media (max-width: 900px) {
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--space-xl);
+            display: none;
+        }
+        
+        .results-grid.show {
+            display: grid;
+        }
+        
+        @media (max-width: 1600px) {
+            .results-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-gray-200);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card.hidden {
+            display: none;
+        }
+        
+        .card h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-blue-deep);
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 2px solid var(--color-beige-gold);
+        }
+        
+        .card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-blue-deep);
+            margin: var(--space-md) 0 var(--space-sm);
+        }
+        
+        .card h3:first-of-type {
+            margin-top: 0;
+        }
+        
+        .section-intro {
+            background: #f8f9fa;
+            padding: var(--space-sm);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-md);
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-gray-200);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-md);
+        }
+        
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        input, select {
+            width: 100%;
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-300);
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-family: 'Lato', sans-serif;
+            color: var(--color-text-primary);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--color-beige-gold);
+            box-shadow: 0 0 0 2px rgba(210, 182, 138, 0.1);
+        }
+        
+        .input-suffix {
+            position: relative;
+        }
+        
+        .input-suffix input {
+            padding-right: 35px;
+        }
+        
+        .input-suffix::after {
+            content: attr(data-suffix);
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-muted);
+            font-weight: 500;
+            font-size: 0.7rem;
+            pointer-events: none;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+        
+        button {
+            flex: 1;
+            background: linear-gradient(135deg, var(--color-beige-gold) 0%, #c4a876 100%);
+            color: var(--color-blue-deep);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        button.secondary {
+            background: var(--color-gray-200);
+            color: var(--color-text-primary);
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 0;
+            border-bottom: 1px solid var(--color-gray-200);
+            font-size: 0.75rem;
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            color: var(--color-text-secondary);
+        }
+        
+        .result-value {
+            font-weight: 600;
+            color: var(--color-text-primary);
+            text-align: right;
+        }
+        
+        .result-value.positive {
+            color: var(--color-success);
+            font-weight: 700;
+        }
+        
+        .result-value.highlight {
+            color: var(--color-beige-gold);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        
+        .result-value.big {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-beige-gold);
+            font-family: 'Cinzel', serif;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, var(--color-blue-deep) 0%, #2a3758 100%);
+            color: var(--color-white);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin: var(--space-md) 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .highlight-box .result-row {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .highlight-box .result-label,
+        .highlight-box .result-value {
+            color: var(--color-white);
+        }
+        
+        .highlight-box .result-value.big {
+            color: var(--color-beige-gold);
+        }
+        
+        .synthese {
+            background: #f8f9fa;
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            border-left: 2px solid var(--color-beige-gold);
+            flex: 1;
+        }
+        
+        .synthese h3 {
+            margin-top: 0;
+            color: var(--color-blue-deep);
+            font-size: 0.85rem;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .synthese h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-blue-deep);
+            margin: var(--space-md) 0 var(--space-xs);
+        }
+        
+        .synthese h4:first-of-type {
+            margin-top: 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xl) var(--space-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .empty-state p {
+            font-size: 0.8rem;
+            margin-bottom: var(--space-xs);
+            color: var(--color-text-primary);
+        }
+        
+        .empty-state p:last-child {
+            color: var(--color-text-muted);
+            font-size: 0.75rem;
+        }
+        
+        .results-section {
+            margin-bottom: var(--space-md);
+        }
+        
+        .results-section h3 {
+            margin-bottom: var(--space-sm);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>🏠 Simulateur DeNormandie</h1>
+            <p class="subtitle">Simulateur technique</p>
+        </div>
+        
+        <form id="simulatorForm">
+            <div class="top-grid">
+                <!-- Colonne 1 : Paramètres -->
+                <div class="card" id="paramsCard">
+                    <h2>📝 Paramètres</h2>
+                    
+                    <div class="section-intro">
+                        Renseignez les informations du projet immobilier.
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <h3>🏡 Bien immobilier</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="prix_bien">Prix</label>
+                            <div class="input-suffix" data-suffix="€">
+                                <input type="number" id="prix_bien" name="prix_bien" step="1" 
+                                       min="0" placeholder="150000" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="surface">Surface</label>
+                            <div class="input-suffix" data-suffix="m²">
+                                <input type="number" id="surface" name="surface" step="0.01" 
+                                       min="0" placeholder="65" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="plafond_loyer">Plafond</label>
+                            <div class="input-suffix" data-suffix="€/m²">
+                                <input type="number" id="plafond_loyer" name="plafond_loyer" step="0.01" 
+                                       min="0" placeholder="10.15" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <h3>💳 Frais</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="frais_garantie">Garantie</label>
+                            <div class="input-suffix" data-suffix="€">
+                                <input type="number" id="frais_garantie" name="frais_garantie" step="1" 
+                                       min="0" placeholder="3000">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="frais_dossier">Dossier</label>
+                            <div class="input-suffix" data-suffix="€">
+                                <input type="number" id="frais_dossier" name="frais_dossier" step="1" 
+                                       min="0" placeholder="500">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <h3>🏦 Prêt</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="duree">Durée</label>
+                            <div class="input-suffix" data-suffix="ans">
+                                <input type="number" id="duree" name="duree" min="5" max="30" 
+                                       placeholder="25" value="25" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taux_emprunt">Taux</label>
+                            <div class="input-suffix" data-suffix="%">
+                                <input type="number" id="taux_emprunt" name="taux_emprunt" step="0.01" 
+                                       min="0" placeholder="3.2" value="3.2" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taux_assurance">Assurance</label>
+                            <div class="input-suffix" data-suffix="%">
+                                <input type="number" id="taux_assurance" name="taux_assurance" step="0.01" 
+                                       min="0" placeholder="0.3" value="0.3" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <h3>📊 Fiscal</h3>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="tmi">TMI</label>
+                            <select id="tmi" name="tmi" required>
+                                <option value="" disabled selected>-- Sélectionnez --</option>
+                                <option value="11">11%</option>
+                                <option value="30">30%</option>
+                                <option value="41">41%</option>
+                                <option value="45">45%</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="submit">🔄 Calculer</button>
+                        <button type="button" class="secondary" id="resetBtn" style="display: none;">↺ Réinitialiser</button>
+                    </div>
+                </div>
+                
+                <!-- Colonne 2 : Bilan -->
+                <div class="card hidden" id="bilanCard">
+                    <h2>📈 Bilan</h2>
+                    <div id="bilanContent"></div>
+                </div>
+            </div>
+            
+            <!-- Grille résultats : pleine largeur -->
+            <div class="results-grid" id="resultsGrid">
+                <!-- Colonne 1 : Économie & TRI -->
+                <div class="card" id="economieCard">
+                    <h2>💰 Économie & TRI</h2>
+                    <div class="highlight-box" id="economieContent"></div>
+                </div>
+                
+                <!-- Colonne 2 : Coûts -->
+                <div class="card" id="coutsCard">
+                    <h2>💵 Coûts</h2>
+                    <div class="results-section" id="coutsContent"></div>
+                </div>
+                
+                <!-- Colonne 3 : Revenus -->
+                <div class="card" id="revenusCard">
+                    <h2>🏠 Revenus</h2>
+                    <div class="results-section" id="revenusContent"></div>
+                </div>
+                
+                <!-- Colonne 4 : Charges -->
+                <div class="card" id="chargesCard">
+                    <h2>📋 Charges</h2>
+                    <div class="results-section" id="chargesContent"></div>
+                </div>
+                
+                <!-- Colonne 5 : Réductions -->
+                <div class="card" id="reductionsCard">
+                    <h2>🎯 Réductions</h2>
+                    <div class="results-section" id="reductionsContent"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Fonction de formatage
+        function formatEuro(val) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(val);
+        }
+        
+        function formatNumber(val, decimals = 2) {
+            return new Intl.NumberFormat('fr-FR', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            }).format(val);
+        }
+        
+        // Fonction de calcul
+        function calculateSimulation(data) {
+            const coef_base = 0.7;
+            const coef_numerateur = 19;
+            
+            // Frais de notaire = Prix du bien * 6%
+            const frais_notaire = data.prix_bien * 0.06;
+            
+            // Montant emprunté = Prix du bien
+            const montant_emprunte = data.prix_bien;
+            
+            // Mensualité du prêt (formule Excel exacte)
+            const taux_mensuel = (data.taux_emprunt / 100) / 12;
+            const nb_mensualites = data.duree * 12;
+            let mensualite_pret;
+            if (taux_mensuel > 0) {
+                mensualite_pret = (montant_emprunte * taux_mensuel) / (1 - Math.pow(1 + taux_mensuel, -nb_mensualites));
+            } else {
+                mensualite_pret = montant_emprunte / nb_mensualites;
+            }
+            const assurance_mensuelle = montant_emprunte * (data.taux_assurance / 100) / 12;
+            const mensualite_totale = Math.round((mensualite_pret + assurance_mensuelle) * 100) / 100;
+            
+            // Coefficient multiplicateur = 0.7 + (19 / surface)
+            // Plafonné à 1.20
+            let coef_multiplicateur = coef_base + (coef_numerateur / data.surface);
+            coef_multiplicateur = Math.min(coef_multiplicateur, 1.20);
+            
+            // Montant du loyer = surface * plafond_loyer * coefficient
+            const loyer_mensuel = data.surface * data.plafond_loyer * coef_multiplicateur;
+            
+            // Frais de gestion = 10% du loyer
+            const frais_gestion = loyer_mensuel * 0.1;
+            
+            // Taxe foncière = (loyer * 1.2) / 12
+            const taxe_fonciere = (loyer_mensuel * 1.2) / 12;
+            
+            // Charges de copro = (surface * 1.5) / 3
+            const charges_copro = (data.surface * 1.5) / 3;
+            
+            // Charges mensuelles = frais_gestion + taxe_fonciere + charges_copro
+            const charges_mensuelles = frais_gestion + taxe_fonciere + charges_copro;
+            
+            // % appliqué selon tranche TMI
+            let pct_applique;
+            switch(parseInt(data.tmi)) {
+                case 11: pct_applique = 0.718; break;
+                case 30: pct_applique = 0.528; break;
+                case 41: pct_applique = 0.418; break;
+                case 45: pct_applique = 0.378; break;
+                default: pct_applique = 0.528;
+            }
+            
+            // Charges réelles = charges_mensuelles * pct_applique
+            const charges_reelles = charges_mensuelles * pct_applique;
+            
+            // Réduction d'impôt années 1-6 = ((prix_bien + frais_notaire) * 2%) / 12
+            const reduction_1_6_mois = ((data.prix_bien + frais_notaire) * 0.02) / 12;
+            
+            // Réduction d'impôt années 6-9 = ((prix_bien + frais_notaire) * 2%) / 12
+            const reduction_6_9_mois = ((data.prix_bien + frais_notaire) * 0.02) / 12;
+            
+            // Réduction d'impôt années 9-12 = ((prix_bien + frais_notaire) * 1%) / 12
+            const reduction_9_12_mois = ((data.prix_bien + frais_notaire) * 0.01) / 12;
+            
+            // Revenus années 1-9 = loyer + réduction impôt
+            const revenus_1_9 = loyer_mensuel + reduction_1_6_mois;
+            
+            // Charges années 1-9 = taux_assurance + charges_reelles
+            const charges_1_9 = assurance_mensuelle + charges_reelles;
+            
+            // Effort net années 1-9
+            const effort_1_9 = revenus_1_9 - charges_1_9;
+            
+            // Revenus années 9-12 = loyer + réduction impôt 9-12
+            const revenus_9_12 = loyer_mensuel + reduction_9_12_mois;
+            
+            // Charges années 9-12
+            const charges_9_12 = assurance_mensuelle + charges_reelles;
+            
+            // Effort net années 9-12
+            const effort_9_12 = revenus_9_12 - charges_9_12;
+            
+            // Économie fiscale totale 12 ans = 21% * (prix_bien + frais_notaire)
+            const economie_fiscale_12ans = 0.21 * (data.prix_bien + frais_notaire);
+            
+            // TRI = (revenus_1_9 * 12) / prix_bien
+            const tri = (revenus_1_9 * 12) / data.prix_bien * 100;
+            
+            return {
+                prix_bien: data.prix_bien,
+                frais_garantie: data.frais_garantie || 0,
+                frais_dossier: data.frais_dossier || 0,
+                frais_notaire,
+                montant_emprunte,
+                mensualite_totale,
+                coef_multiplicateur,
+                loyer_mensuel,
+                frais_gestion,
+                taxe_fonciere,
+                charges_copro,
+                charges_mensuelles,
+                charges_reelles,
+                tmi: data.tmi,
+                reduction_1_6_mois,
+                reduction_6_9_mois,
+                reduction_9_12_mois,
+                revenus_1_9,
+                charges_1_9,
+                effort_1_9,
+                revenus_9_12,
+                charges_9_12,
+                effort_9_12,
+                economie_fiscale_12ans,
+                tri
+            };
+        }
+        
+        // Fonction pour créer une ligne de résultat
+        function createResultRow(label, value, classes = '') {
+            const row = document.createElement('div');
+            row.className = 'result-row';
+            row.innerHTML = `
+                <span class="result-label">${label}</span>
+                <span class="result-value ${classes}">${value}</span>
+            `;
+            return row;
+        }
+        
+        // Fonction pour afficher les résultats
+        function displayResults(results) {
+            const bilanCard = document.getElementById('bilanCard');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            // Afficher les sections
+            bilanCard.classList.remove('hidden');
+            resultsGrid.classList.add('show');
+            resetBtn.style.display = 'block';
+            
+            // Bilan
+            const bilanContent = document.getElementById('bilanContent');
+            const synthese = document.createElement('div');
+            synthese.className = 'synthese';
+            synthese.innerHTML = `
+                <h3>Années 1-9</h3>
+            `;
+            synthese.appendChild(createResultRow('Revenus', formatEuro(results.revenus_1_9), 'positive'));
+            synthese.appendChild(createResultRow('Charges', formatEuro(results.charges_1_9), ''));
+            synthese.appendChild(createResultRow('Net', formatEuro(results.effort_1_9), 'highlight'));
+            const h4_1 = document.createElement('h4');
+            h4_1.textContent = 'Années 10-12';
+            synthese.appendChild(h4_1);
+            synthese.appendChild(createResultRow('Revenus', formatEuro(results.revenus_9_12), 'positive'));
+            synthese.appendChild(createResultRow('Charges', formatEuro(results.charges_9_12), ''));
+            synthese.appendChild(createResultRow('Net', formatEuro(results.effort_9_12), 'highlight'));
+            bilanContent.innerHTML = '';
+            bilanContent.appendChild(synthese);
+            
+            // Économie & TRI
+            const economieContent = document.getElementById('economieContent');
+            economieContent.innerHTML = '';
+            economieContent.appendChild(createResultRow('Économie (12 ans)', formatEuro(results.economie_fiscale_12ans), 'big'));
+            economieContent.appendChild(createResultRow('TRI', formatNumber(results.tri, 2) + '%', 'big'));
+            
+            // Coûts
+            const coutsContent = document.getElementById('coutsContent');
+            coutsContent.innerHTML = '';
+            coutsContent.appendChild(createResultRow('Prix', formatEuro(results.prix_bien), ''));
+            coutsContent.appendChild(createResultRow('Notaire', formatEuro(results.frais_notaire), ''));
+            if (results.frais_garantie > 0) {
+                coutsContent.appendChild(createResultRow('Garantie', formatEuro(results.frais_garantie), ''));
+            }
+            if (results.frais_dossier > 0) {
+                coutsContent.appendChild(createResultRow('Dossier', formatEuro(results.frais_dossier), ''));
+            }
+            const emprunteRow = createResultRow('Emprunté', formatEuro(results.montant_emprunte), 'highlight');
+            emprunteRow.querySelector('.result-label').innerHTML = '<strong>Emprunté</strong>';
+            coutsContent.appendChild(emprunteRow);
+            const mensualiteRow = createResultRow('Mensualité', formatEuro(results.mensualite_totale), 'highlight');
+            mensualiteRow.querySelector('.result-label').innerHTML = '<strong>Mensualité</strong>';
+            coutsContent.appendChild(mensualiteRow);
+            
+            // Revenus
+            const revenusContent = document.getElementById('revenusContent');
+            revenusContent.innerHTML = '';
+            revenusContent.appendChild(createResultRow('Coefficient', formatNumber(results.coef_multiplicateur, 2), ''));
+            const loyerRow = createResultRow('Loyer mensuel', formatEuro(results.loyer_mensuel), 'highlight');
+            loyerRow.querySelector('.result-label').innerHTML = '<strong>Loyer mensuel</strong>';
+            revenusContent.appendChild(loyerRow);
+            
+            // Charges
+            const chargesContent = document.getElementById('chargesContent');
+            chargesContent.innerHTML = '';
+            chargesContent.appendChild(createResultRow('Gestion', formatEuro(results.frais_gestion), ''));
+            chargesContent.appendChild(createResultRow('Foncière', formatEuro(results.taxe_fonciere), ''));
+            chargesContent.appendChild(createResultRow('Copro', formatEuro(results.charges_copro), ''));
+            const totalRow = createResultRow('Total', formatEuro(results.charges_mensuelles), '');
+            totalRow.querySelector('.result-label').innerHTML = '<strong>Total</strong>';
+            chargesContent.appendChild(totalRow);
+            chargesContent.appendChild(createResultRow('Réelles (' + results.tmi + '%)', formatEuro(results.charges_reelles), ''));
+            
+            // Réductions
+            const reductionsContent = document.getElementById('reductionsContent');
+            reductionsContent.innerHTML = '';
+            reductionsContent.appendChild(createResultRow('1-6 ans', formatEuro(results.reduction_1_6_mois) + '/mois', 'positive'));
+            reductionsContent.appendChild(createResultRow('7-9 ans', formatEuro(results.reduction_6_9_mois) + '/mois', 'positive'));
+            reductionsContent.appendChild(createResultRow('10-12 ans', formatEuro(results.reduction_9_12_mois) + '/mois', 'positive'));
+        }
+        
+        // Gestion du formulaire
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('simulatorForm');
+            const resetBtn = document.getElementById('resetBtn');
+            const bilanCard = document.getElementById('bilanCard');
+            const resultsGrid = document.getElementById('resultsGrid');
+            
+            // Gestion de la soumission du formulaire
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Récupérer les valeurs
+                const data = {
+                    prix_bien: Math.max(0, parseFloat(document.getElementById('prix_bien').value) || 0),
+                    surface: Math.max(0, parseFloat(document.getElementById('surface').value) || 0),
+                    plafond_loyer: Math.max(0, parseFloat(document.getElementById('plafond_loyer').value) || 0),
+                    frais_garantie: Math.max(0, parseFloat(document.getElementById('frais_garantie').value) || 0),
+                    frais_dossier: Math.max(0, parseFloat(document.getElementById('frais_dossier').value) || 0),
+                    duree: Math.max(5, parseInt(document.getElementById('duree').value) || 25),
+                    taux_emprunt: Math.max(0, parseFloat(document.getElementById('taux_emprunt').value) || 3.2),
+                    taux_assurance: Math.max(0, parseFloat(document.getElementById('taux_assurance').value) || 0.3),
+                    tmi: document.getElementById('tmi').value
+                };
+                
+                // Vérifier que tous les champs requis sont remplis
+                if (!data.prix_bien || !data.surface || !data.plafond_loyer || !data.tmi) {
+                    alert('Veuillez remplir tous les champs obligatoires');
+                    return;
+                }
+                
+                // Calculer
+                const results = calculateSimulation(data);
+                
+                // Afficher les résultats
+                displayResults(results);
+            });
+            
+            // Gestion du bouton réinitialiser
+            resetBtn.addEventListener('click', function() {
+                form.reset();
+                // Réinitialiser les valeurs par défaut
+                document.getElementById('duree').value = '25';
+                document.getElementById('taux_emprunt').value = '3.2';
+                document.getElementById('taux_assurance').value = '0.3';
+                document.getElementById('tmi').value = '';
+                
+                // Masquer les sections
+                bilanCard.classList.add('hidden');
+                resultsGrid.classList.remove('show');
+                resetBtn.style.display = 'none';
+                
+                // Vider le contenu
+                document.getElementById('bilanContent').innerHTML = '';
+                document.getElementById('economieContent').innerHTML = '';
+                document.getElementById('coutsContent').innerHTML = '';
+                document.getElementById('revenusContent').innerHTML = '';
+                document.getElementById('chargesContent').innerHTML = '';
+                document.getElementById('reductionsContent').innerHTML = '';
+            });
+        });
+    </script>
+</body>
+</html>
